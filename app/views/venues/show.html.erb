@@ -7,7 +7,19 @@
   <dd><%= @venue.name %></dd>
 
   <dt>Neighborhood ID</dt>
-  <dd><%= @venue.neighborhood_id %></dd>
+  <dd><%= Neighborhood.find_by({ :id => @venue.neighborhood_id}).name %></dd>
+
+  <dt>Favorites</dt>
+  <dd>
+    <ul>
+      <% Favorite.where({ :venue_id => @venue.id }).each do |favorite| %>
+      <li>
+      <%= Dish.find_by({ :id => favorite.dish_id }).name %>
+      (<%= User.find_by({ :id => favorite.user_id }).username %>)
+      </li>
+      <% end %>
+    </ul>
+  </dd>
 
   <dt>Address</dt>
   <dd><%= @venue.address %></dd>
@@ -37,10 +49,10 @@
           mapOptions);
 
         var marker = new google.maps.Marker({
-              position: myLatlng,
-              map: map,
-              title: '<%= @venue.name %>'
-          });
+          position: myLatlng,
+          map: map,
+          title: '<%= @venue.name %>'
+        });
       }
 
       google.maps.event.addDomListener(window, 'load', initialize);
